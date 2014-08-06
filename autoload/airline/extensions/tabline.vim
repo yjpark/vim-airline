@@ -5,6 +5,9 @@ let s:formatter = get(g:, 'airline#extensions#tabline#formatter', 'default')
 let s:excludes = get(g:, 'airline#extensions#tabline#excludes', [])
 let s:tab_nr_type = get(g:, 'airline#extensions#tabline#tab_nr_type', 0)
 let s:show_buffers = get(g:, 'airline#extensions#tabline#show_buffers', 1)
+" yjpark {{{
+let s:show_buffer_nr = get(g:, 'airline#extensions#tabline#show_buffer_nr', 1)
+" yjpark }}}
 let s:show_tab_nr = get(g:, 'airline#extensions#tabline#show_tab_nr', 1)
 let s:show_tab_type = get(g:, 'airline#extensions#tabline#show_tab_type', 1)
 let s:close_symbol = get(g:, 'airline#extensions#tabline#close_symbol', 'X')
@@ -216,7 +219,16 @@ function! s:get_buffers()
         let group = 'airline_tabhid'
       endif
     endif
-    call b.add_section(group, s:spc.'%(%{airline#extensions#tabline#get_buffer_name('.nr.')}%)'.s:spc)
+    " yjpark {{{
+    let val = '%('
+    if s:show_buffer_nr
+      let val .= '['.nr.']'
+    endif
+    " yjpark }}}
+    " yjpark {{{
+    " call b.add_section(group, s:spc.'%(%{airline#extensions#tabline#get_buffer_name('.nr.')}%)'.s:spc)
+    call b.add_section(group, val.'%'.nr.'T %{airline#extensions#tabline#get_buffer_name('.nr.')} %)')
+    " yjpark }}}
   endfor
 
   call b.add_section('airline_tabfill', '')
@@ -255,9 +267,13 @@ function! s:get_tabs()
     let val = '%('
     if s:show_tab_nr
       if s:tab_nr_type == 0
-        let val .= '[%{len(tabpagebuflist('.i.'))}]'
-      else
+        let val .= ' %{len(tabpagebuflist('.i.'))}'
+      " yjpark {{{
+      elseif s:tab_nr_type == 101
         let val .= '['.i.']'
+      " yjpark }}}
+      else
+        let val .= (g:airline_symbols.space).i
       endif
     endif
     call b.add_section(group, val.'%'.i.'T %{airline#extensions#tabline#title('.i.')} %)')
