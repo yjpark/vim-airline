@@ -29,6 +29,20 @@ let s:buf_min_count = get(g:, 'airline#extensions#tabline#buffer_min_count', 0)
 let s:tab_min_count = get(g:, 'airline#extensions#tabline#tab_min_count', 0)
 let s:spc = g:airline_symbols.space
 
+"yjpark {{{
+function! airline#extensions#tabline#get_buffer_nr_by_visible_index(n)
+  let i = 1
+  " yjpark }}}
+  for nr in s:get_visible_buffers()
+    if (i == a:n)
+      return nr
+    endif
+    let i = i + 1
+  endfor
+  return -1
+endfunction
+"yjpark }}}
+
 function! airline#extensions#tabline#init(ext)
   if has('gui_running')
     set guioptions-=e
@@ -200,6 +214,9 @@ function! s:get_buffers()
 
   let b = airline#builder#new(s:builder_context)
   let tab_bufs = tabpagebuflist(tabpagenr())
+  " yjpark {{{
+  let i = 1
+  " yjpark }}}
   for nr in s:get_visible_buffers()
     if nr < 0
       call b.add_raw('%#airline_tabhid#...')
@@ -222,12 +239,13 @@ function! s:get_buffers()
     " yjpark {{{
     let val = '%('
     if s:show_buffer_nr
-      let val .= '['.nr.']'
+      let val .= '['.i.']'
     endif
     " yjpark }}}
     " yjpark {{{
     " call b.add_section(group, s:spc.'%(%{airline#extensions#tabline#get_buffer_name('.nr.')}%)'.s:spc)
-    call b.add_section(group, val.'%'.nr.'T %{airline#extensions#tabline#get_buffer_name('.nr.')} %)')
+    call b.add_section(group, val.'%'.i.'T %{airline#extensions#tabline#get_buffer_name('.nr.')} %)')
+    let i = i + 1
     " yjpark }}}
   endfor
 
