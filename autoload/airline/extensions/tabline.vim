@@ -255,9 +255,9 @@ function! s:get_tabs()
     let val = '%('
     if s:show_tab_nr
       if s:tab_nr_type == 0
-        let val .= ' %{len(tabpagebuflist('.i.'))}'
+        let val .= '[%{len(tabpagebuflist('.i.'))}]'
       else
-        let val .= (g:airline_symbols.space).i
+        let val .= '['.i.']'
       endif
     endif
     call b.add_section(group, val.'%'.i.'T %{airline#extensions#tabline#title('.i.')} %)')
