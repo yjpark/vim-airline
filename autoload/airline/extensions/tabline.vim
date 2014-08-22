@@ -140,6 +140,11 @@ function! s:get_buffer_list()
       if getbufvar(nr, 'current_syntax') == 'qf'
         continue
       endif
+      " yjpark {{{
+      if getbufvar(nr, '&bufhidden') == 'hide'
+        continue
+      endif
+      " yjpark }}}
       call add(buffers, nr)
     endif
   endfor
